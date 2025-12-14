@@ -1,0 +1,47 @@
+@startuml PPE_Vision_Detector_V2_Roadmap
+
+title PPE Vision Detector - V2 Feature Roadmap
+
+rectangle "Phase 1: Core Enhancements" as P1 #LightBlue {
+  card "Real-time Video Stream" as V1 #FF6B6B
+  card "Multi-Camera Support" as V2 #FF6B6B
+  card "Improved Model Accuracy" as V3 #FFA94D
+  card "Custom PPE Class Training" as V4 #FFA94D
+}
+
+rectangle "Phase 2: Analytics & Dashboard" as P2 #LightGreen {
+  card "Web Dashboard UI" as A1 #FF6B6B
+  card "Historical Analytics" as A2 #FFA94D
+  card "Compliance Trends & Charts" as A3 #FFA94D
+  card "Heat Map Visualization" as A4 #FFE066
+}
+
+rectangle "Phase 3: Alerts & Integration" as P3 #LightYellow {
+  card "Real-time Alert System" as I1 #FF6B6B
+  card "Email/SMS Notifications" as I2 #FFA94D
+  card "Slack/Teams Integration" as I3 #FFA94D
+  card "API Webhooks" as I4 #FFE066
+  card "IoT Device Integration" as I5 #69DB7C
+}
+
+rectangle "Phase 4: Enterprise Features" as P4 #LightPink {
+  card "User Auth & RBAC" as E1 #FF6B6B
+  card "Multi-tenant Support" as E2 #FFA94D
+  card "Audit Logging" as E3 #FFA94D
+  card "Cloud Deployment" as E4 #FFE066
+  card "Mobile App" as E5 #69DB7C
+}
+
+P1 -down-> P2
+P2 -down-> P3
+P3 -down-> P4
+
+legend right
+  | Color | Priority |
+  | <#FF6B6B> | Critical |
+  | <#FFA94D> | High |
+  | <#FFE066> | Medium |
+  | <#69DB7C> | Nice to Have |
+endlegend
+
+@enduml
