@@ -532,7 +532,7 @@ async def detect_ppe(file: UploadFile = File(...)):
         )
 
 
-@app.post("/generate-report")
+@app.post("/report")
 async def generate_report(file: UploadFile = File(...)):
     """Generate PDF incident Report with per-person PPE status"""
     try:
