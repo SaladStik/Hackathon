@@ -69,7 +69,7 @@ def box_overlap_percentage(ppe_box, person_box):
     return intersection_area / ppe_area if ppe_area > 0 else 0.0
 
 
-def is_ppe_near_person(ppe_box, person_box, margin_ratio=0.3):
+def is_ppe_near_person(ppe_box, person_box, margin_ratio=0.5):
     """Check if PPE is within or near a person's bounding box."""
     x1_per, y1_per, x2_per, y2_per = person_box
     person_width = x2_per - x1_per
@@ -233,11 +233,16 @@ class PPEDetector:
             detected_count = sum(1 for v in ppe_status.values() if v["present"] is True)
             missing_count = sum(1 for v in ppe_status.values() if v["present"] is False)
 
-            if missing_count > 0:
-                compliance = "non_compliant"
-            elif detected_count == 3:
+            if detected_count == 3:
                 compliance = "compliant"
+            elif detected_count > 0 and missing_count > 0:
+                # Has some PPE but missing others = partial
+                compliance = "partial"
+            elif missing_count > 0 and detected_count == 0:
+                # All detected PPE is missing = non-compliant
+                compliance = "non_compliant"
             elif detected_count > 0:
+                # Has some PPE, none explicitly missing
                 compliance = "partial"
             else:
                 compliance = "unknown"
@@ -255,16 +260,16 @@ class PPEDetector:
                 }
             )
 
-            # draw annoatations
-            annoated_image = self._draw_annotations(
-                image, person_ppe_status, ppe_items, missing_ppe
-            )
+        # draw annotations (outside the loop)
+        annotated_image = self._draw_annotations(
+            image, person_ppe_status, ppe_items, missing_ppe
+        )
 
-            return {
-                "persons": person_ppe_status,
-                "total_persons": len(person_ppe_status),
-                "annotated_image": annoated_image,
-            }
+        return {
+            "persons": person_ppe_status,
+            "total_persons": len(person_ppe_status),
+            "annotated_image": annotated_image,
+        }
 
     def _draw_annotations(self, image, person_ppe_status, ppe_items, missing_ppe):
         """Draw bounding boxes and labels on image."""

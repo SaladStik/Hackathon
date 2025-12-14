@@ -25,9 +25,9 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT
 def generate_pdf_report(
     output_path: str,
     detection_id: str,
-    annotated_item_path: str,
+    annotated_image_path: str,
     original_image_path: Optional[str] = None,
-    detectiion_data: dict = None,
+    detection_data: dict = None,
 ) -> str:
     """generates report"""
     detection_data = detection_data or {}
@@ -110,7 +110,7 @@ def generate_pdf_report(
     story = []
 
     # header
-    story.apppend(Paragraph("PPE SAFETY COMPLIANCE REPORT", title_style))
+    story.append(Paragraph("PPE SAFETY COMPLIANCE REPORT", title_style))
     story.append(
         Paragraph("Personal Protective Equipment Detection Analysis", subtitle_style)
     )
@@ -120,15 +120,11 @@ def generate_pdf_report(
     story.append(Spacer(1, 20))
 
     # report metadata
-    timestamp = detection_data.get(
-        "timestamp", datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    )
     total_persons = detection_data.get("total_persons", 0)
     meta_data = [
         ["Report ID:", detection_id],
         ["Generated:", datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
-        ["Analysis Time:", timestamp],
-        ["Persons Detected", total_persons],
+        ["Persons Detected:", str(total_persons)],
     ]
     meta_table = Table(meta_data, colWidths=[1.5 * inch, 4 * inch])
     meta_table.setStyle(
@@ -149,19 +145,19 @@ def generate_pdf_report(
     story.append(Spacer(1, 20))
 
     # get persons data
-    persons = detection_data.get("Persons", [])
+    persons = detection_data.get("persons", [])
 
     # count compliance status
     compliant_count = sum(1 for p in persons if p.get("compliance") == "compliant")
     non_compliant_count = sum(
-        1 for p in persons if p.get("compliance") == "non-compliant"
+        1 for p in persons if p.get("compliance") == "non_compliant"
     )
     partial_count = sum(
-        1 for p in persons if p.get("compliance") == ["partial", "unknown"]
+        1 for p in persons if p.get("compliance") in ["partial", "unknown"]
     )
 
     # overall status
-    story.appennd(Paragraph("Overall Compliance Status", heading_style))
+    story.append(Paragraph("Overall Compliance Status", heading_style))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.grey))
 
     if non_compliant_count > 0:
@@ -259,10 +255,10 @@ def generate_pdf_report(
                 """returns text based indicator ppe status"""
                 if status.get("present") is True:
                     conf = status.get("confidence", 0)
-                    return f"YES ({conf * 100:0f})"
+                    return f"YES ({conf * 100:.1f}%)"
                 elif status.get("present") is False:
                     conf = status.get("confidence", 0)
-                    return f"NO ({conf * 100:0f})"
+                    return f"NO ({conf * 100:.1f}%)"
                 else:
                     return "N/A"
 
@@ -272,12 +268,14 @@ def generate_pdf_report(
 
             if compliance == "compliant":
                 status_text = "COMPLIANT"
-            elif compliance == "non-compliant":
+            elif compliance == "non_compliant":
                 status_text = "NON-COMPLIANT"
             elif compliance == "partial":
                 status_text = "PARTIAL"
-            else:
+            elif compliance == "unknown":
                 status_text = "UNKNOWN"
+            else:
+                status_text = "N/A"
 
             person_table_data.append(
                 [f"Person {person_id}", helmet_text, vest_text, mask_text, status_text]
@@ -310,7 +308,7 @@ def generate_pdf_report(
             elif compliance == "partial":
                 bg_color = colors.HexColor("#fff3cd")
                 text_color = colors.orange
-            elif compliance == "non-compliant":
+            elif compliance == "non_compliant":
                 bg_color = colors.HexColor("#f87da0")
                 text_color = colors.red
             else:
@@ -348,8 +346,8 @@ def generate_pdf_report(
     story.append(HRFlowable(width="100%", thickness=1, color=colors.grey))
     story.append(Spacer(1, 10))
 
-    if Path(annotated_item_path).exists():
-        img = Image(annotated_item_path)
+    if Path(annotated_image_path).exists():
+        img = Image(annotated_image_path)
         img_width = 6 * inch
         aspect = img.imageHeight / img.imageWidth
         img_height = img_width * aspect
@@ -384,7 +382,7 @@ def generate_pdf_report(
 
     # list non-compliant persons with missing items
     non_compliant_persons = [
-        p for p in persons if p.get("compliance") == "non-compliant"
+        p for p in persons if p.get("compliance") == "non_compliant"
     ]
 
     if non_compliant_persons:
