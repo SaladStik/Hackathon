@@ -1,4 +1,19 @@
-# PPE Vision Detector
+# 🦺 PPE Vision Detector
+
+<div align="center">
+
+### 🏆 Award-Winning Hackathon Project 🏆
+
+[![Community Choice](https://img.shields.io/badge/🥇_Community_Choice-Winner-gold?style=for-the-badge)](https://take-home.skillsproject.ai/hackathons/6920c68ad7d8abe4550222ee)
+[![Technical Depth](https://img.shields.io/badge/🥇_Technical_Depth-Winner-gold?style=for-the-badge)](https://take-home.skillsproject.ai/hackathons/6920c68ad7d8abe4550222ee)
+
+**We're thrilled to announce that this project won both the Community Choice and Technical Depth awards!**
+
+[**🎉 View the Hackathon Results →**](https://take-home.skillsproject.ai/hackathons/6920c68ad7d8abe4550222ee)
+
+</div>
+
+---
 
 A computer vision-powered safety compliance system that detects Personal Protective Equipment (PPE) in images and generates incident reports.
 
